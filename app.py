@@ -32,13 +32,16 @@ def generate_short_url():
 def index():
     if request.method == 'POST':
         original_url = request.form['original_url']
-        existing_url = URL.query.filter_by(original_url=original_url).first()
-        if existing_url:
-            return jsonify({'short_url': existing_url.short_url})
+        custom_url = request.form['custom_url'].strip()
 
-        short_url = generate_short_url()
-        while URL.query.filter_by(short_url=short_url).first() is not None:
+        if custom_url:
+            if URL.query.filter_by(short_url=custom_url).first():
+                return jsonify({'error': 'Custom URL is already in use. Please choose another one.'})
+            short_url = custom_url
+        else:
             short_url = generate_short_url()
+            while URL.query.filter_by(short_url=short_url).first() is not None:
+                short_url = generate_short_url()
 
         new_url = URL(original_url=original_url, short_url=short_url)
         db.session.add(new_url)
@@ -54,3 +57,4 @@ def redirect_to_url(short_url):
 
 if __name__ == '__main__':
     app.run(debug=True)
+

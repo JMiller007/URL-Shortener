@@ -74,6 +74,8 @@
         <form method="post">
             <label for="original_url">Enter URL:</label>
             <input type="text" id="original_url" name="original_url" placeholder="https://example.com">
+            <label for="custom_url">Custom Short URL (optional):</label>
+            <input type="text" id="custom_url" name="custom_url" placeholder="custom-short-url">
             <button type="submit">Shorten</button>
         </form>
         {% if short_url %}
