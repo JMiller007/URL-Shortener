@@ -31,8 +31,9 @@ def generate_short_url():
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        original_url = request.form['original_url']
-        custom_url = request.form['custom_url'].strip()
+        data = request.get_json()
+        original_url = data['original_url']
+        custom_url = data['custom_url'].strip()
 
         if custom_url:
             if URL.query.filter_by(short_url=custom_url).first():
@@ -47,7 +48,7 @@ def index():
         db.session.add(new_url)
         db.session.commit()
 
-        return jsonify({'short_url': short_url})
+        return jsonify({'short_url': f'/{short_url}'})
     return render_template('index.html')
 
 @app.route('/<short_url>')
@@ -57,4 +58,3 @@ def redirect_to_url(short_url):
 
 if __name__ == '__main__':
     app.run(debug=True)
-
